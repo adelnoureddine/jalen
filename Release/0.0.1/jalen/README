@@ -1,6 +1,11 @@
 ============================================================================
 Jalen: Java Application Energy-Aware Real-Time Profiling (Agent & Client)
-Copyright (C) 2011 Adel Noureddine, INRIA, University of Lille 1
+Copyright (C) 2011-2012 Adel Noureddine, INRIA, University of Lille 1
+
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the GNU Lesser Public License v2.1
+which accompanies this distribution, and is available at
+http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
 Contact: adel.noureddine@inria.fr
 
