@@ -49,7 +49,7 @@ java -javaagent:$JALEN_AGENT.jar -jar $YOUR_PROGRAM.jar
 For example, to use Jalen version 1.0:
 
 ```bash
-java -javaagent:jalen-1.0-jar-with-dependencies.jar -jar $YOUR_PROGRAM.jar
+java -Dconfig.file=./configuration/application.conf -javaagent:jalen-1.0-SNAPSHO-jar-with-dependencies.jar -jar $YOUR_PROGRAM.jar
 ```
 
 ### How to configure it
