@@ -1,7 +1,7 @@
 # Jalen
 
 Jalen is a Java agent for monitoring energy at the code level.
-It uses power information provided by [PowerAPI][http://www.powerapi.org/] (v. 1.6+), in order to estimate the energy consumption of software code.
+It uses power information provided by [PowerAPI](http://www.powerapi.org/ "PowerAPI") (v. 1.6+), in order to estimate the energy consumption of software code.
 In particular, Jalen provides energy information at finer grain, i.e., at the level of Java methods.
 Concretely, Jalen is implemented as a Java agent that hooks to the Java Virtual Machine during its start, and monitors and collects energy related information of the executed Java application.
 Jalen uses statistical sampling in order to estimate resources usage, such as the CPU utilization, disk and network access.
