@@ -43,7 +43,7 @@ sh buil.sh
 You simply need to inject the jar file for Jalen as a Java agent during the start of your program:
 
 ```bash
-java -javaagent:$JALEN_AGENT.jar -jar $YOUR_PROGRAM.jar
+java -Dconfig.file=./configuration/application.conf -javaagent:$JALEN_AGENT.jar -jar $YOUR_PROGRAM.jar
 ```
 
 For example, to use Jalen version 1.0:
