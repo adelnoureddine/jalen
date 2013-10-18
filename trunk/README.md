@@ -59,11 +59,11 @@ Configuring Jalen is achieved by modifying the `config.properties` file.
 
 <h2 id="future-works">Future works</h2>
 
-We are working on adding new _energy models_ for estimating the energy consumption of software by other hardware resources. If you are interested in joining, feel free to contact us via our [GitHub](https://github.com/adelnoureddine/jalen "GitHub") webpage or email us at adel.noureddine@inria.fr.
+We are working on adding new _energy models_ for estimating the energy consumption of software by other hardware resources. If you are interested in joining, feel free to contact us via our [GitHub](https://github.com/adelnoureddine/jalen "GitHub") webpage or email us at adel.noureddine@inria.fr!
 
 <h2 id="license">License</h2>
 
-Copyright (C) 2013 Adel Noureddine, Inria, University Lille 1.
+Copyright (C) 2013 Inria, University Lille 1.
 
 Jalen is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as

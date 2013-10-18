@@ -581,69 +581,30 @@ public class Agent {
 					Agent.appendToFile(resultsFolder + "netLibraryCon-" + appPid + ".csv", netLibraryCon, true);
 
 					// CPU energy
-					System.out.println();
-					System.out.println(allCPUEnergy);
-					System.out.println("--------------");
-					System.out.println(netCPUEnergy);
-					System.out.println("--------------");
-					System.out.println(netLibraryCPUEnergy);
+					System.out.println("\n" + allCPUEnergy + "--------------" + netCPUEnergy + "--------------" + netLibraryCPUEnergy);
 
 					// Number of calls
-					System.out.println();
-					System.out.println(allCalls);
-					System.out.println("--------------");
-					System.out.println(netCalls);
-					System.out.println("--------------");
-					System.out.println(netLibraryCalls);
+					System.out.println("\n" + allCalls + "--------------" + netCalls + "--------------" + netLibraryCalls);
 
 					// Disk energy
-					System.out.println();
-					System.out.println(allDiskEnergy);
-					System.out.println("--------------");
-					System.out.println(netDiskEnergy);
-					System.out.println("--------------");
-					System.out.println(netLibraryDiskEnergy);
+					System.out.println("\n" + allDiskEnergy + "--------------" + netDiskEnergy + "--------------" + netLibraryDiskEnergy);
 
 					// Concatenated values
-					System.out.println();
-					System.out.println(allCon);
-					System.out.println("--------------");
-					System.out.println(netCon);
-					System.out.println("--------------");
-					System.out.println(netLibraryCon);
+					System.out.println("\n" + allCon + "--------------" + netCon + "--------------" + netLibraryCon);
 
 				} else if (Agent.outputFormat.equals("console")) {
 					// CPU energy
-					System.out.println();
-					System.out.println(allCPUEnergy);
-					System.out.println("--------------");
-					System.out.println(netCPUEnergy);
-					System.out.println("--------------");
-					System.out.println(netLibraryCPUEnergy);
+					System.out.println("\n" + allCPUEnergy + "--------------" + netCPUEnergy + "--------------" + netLibraryCPUEnergy);
 
 					// Number of calls
-					System.out.println();
-					System.out.println(allCalls);
-					System.out.println("--------------");
-					System.out.println(netCalls);
-					System.out.println("--------------");
-					System.out.println(netLibraryCalls);
+					System.out.println("\n" + allCalls + "--------------" + netCalls + "--------------" + netLibraryCalls);
 
 					// Disk energy
-					System.out.println();
-					System.out.println(allDiskEnergy);
-					System.out.println("--------------");
-					System.out.println(netDiskEnergy);
-					System.out.println("--------------");
-					System.out.println(netLibraryDiskEnergy);
+					System.out.println("\n" + allDiskEnergy + "--------------" + netDiskEnergy + "--------------" + netLibraryDiskEnergy);
 
 					// Concatenated values
-					System.out.println();
-					System.out.println(allCon);
-					System.out.println("--------------");
-					System.out.println(netCon);
-					System.out.println("--------------");
-					System.out.println(netLibraryCon);
+					System.out.println("\n" + allCon + "--------------" + netCon + "--------------" + netLibraryCon);
+
 				} else if (Agent.outputFormat.equals("bash-special")) {
 					Agent.appendToFile(resultsFolder + "netLibraryCPUEnergy-" + appPid + ".csv", netLibraryCPUEnergy, true);
 					System.out.println("\n");
