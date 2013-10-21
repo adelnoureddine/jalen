@@ -72,13 +72,15 @@ public class Agent {
 
 		Thread.currentThread().setName("Jalen Agent Threads");
 		System.out.println("+---------------------------------------------------+");
-		System.out.println("| Jalen Agent Sampling Version 0.6                  |");
+		System.out.println("| Jalen Agent Version 1.0                           |");
 		System.out.println("+---------------------------------------------------+");
 
 		ThreadMXBean mxbean = ManagementFactory.getThreadMXBean();
 		// Check if CPU Time measurement is supported by the JVM. Quit otherwise
-		if (! mxbean.isThreadCpuTimeSupported())
-			throw new JalenError("[CRITICAL] Thread CPU Time is not supported on this Java Virtual Machine");
+		if (! mxbean.isThreadCpuTimeSupported()) {
+			System.out.println("[CRITICAL] Thread CPU Time is not supported on this Java Virtual Machine");
+			System.exit(1);
+		}
 
 		// Enable CPU Time measurement if it is disabled
 		if (! mxbean.isThreadCpuTimeEnabled())
@@ -90,7 +92,8 @@ public class Agent {
 		try {
 			prop.load(new FileInputStream("./config.properties"));
 		} catch (IOException e) {
-			throw new JalenError("[CRITICAL] No config.properties file found in current directory: " + System.getProperty("user.dir"));
+			System.out.println("[CRITICAL] No config.properties file found in current directory: " + System.getProperty("user.dir"));
+			System.exit(1);
 		}
 
 		// Upate parameters from properties file
@@ -235,7 +238,7 @@ public class Agent {
 						// +
 						// Estimation of next Jalen cycle: last jalen execution time + next sleep time of Jalen
 						if (((totalExecTime + Agent.jalenCycleDuration) + (jalenExecTime + Agent.jalenCycleDuration)) >= Agent.powerAPICycleDuration) {
-							// Stop Jalen cycle because duration exceeds PowerAPI cycle
+							// Stop Jalen cycle because duration exceeded PowerAPI cycle
 							break;
 						}
 
@@ -532,84 +535,92 @@ public class Agent {
 
 				System.out.print("[Jalen] Dumping energy data... ");
 
-				if (Agent.outputFormat.equals("file")) {
-					// CPU energy
-					Agent.appendToFile(resultsFolder + "netCPUEnergy-" + appPid + ".csv", netCPUEnergy, true);
-					Agent.appendToFile(resultsFolder + "allCPUEnergy-" + appPid + ".csv", allCPUEnergy, true);
-					Agent.appendToFile(resultsFolder + "netLibraryCPUEnergy-" + appPid + ".csv", netLibraryCPUEnergy, true);
+				switch (Agent.outputFormat) {
+					case "file":
+						// CPU energy
+						Agent.appendToFile(resultsFolder + "netCPUEnergy-" + appPid + ".csv", netCPUEnergy, true);
+						Agent.appendToFile(resultsFolder + "allCPUEnergy-" + appPid + ".csv", allCPUEnergy, true);
+						Agent.appendToFile(resultsFolder + "netLibraryCPUEnergy-" + appPid + ".csv", netLibraryCPUEnergy, true);
 
-					// Number of calls
-					Agent.appendToFile(resultsFolder + "netCalls-" + appPid + ".csv", netCalls, true);
-					Agent.appendToFile(resultsFolder + "allCalls-" + appPid + ".csv", allCalls, true);
-					Agent.appendToFile(resultsFolder + "netLibraryCalls-" + appPid + ".csv", netLibraryCalls, true);
+						// Number of calls
+						Agent.appendToFile(resultsFolder + "netCalls-" + appPid + ".csv", netCalls, true);
+						Agent.appendToFile(resultsFolder + "allCalls-" + appPid + ".csv", allCalls, true);
+						Agent.appendToFile(resultsFolder + "netLibraryCalls-" + appPid + ".csv", netLibraryCalls, true);
 
-					// Disk energy
-					Agent.appendToFile(resultsFolder + "netDiskEnergy-" + appPid + ".csv", netDiskEnergy, true);
-					Agent.appendToFile(resultsFolder + "allDiskEnergy-" + appPid + ".csv", allDiskEnergy, true);
-					Agent.appendToFile(resultsFolder + "netLibraryDiskEnergy-" + appPid + ".csv", netLibraryDiskEnergy, true);
+						// Disk energy
+						Agent.appendToFile(resultsFolder + "netDiskEnergy-" + appPid + ".csv", netDiskEnergy, true);
+						Agent.appendToFile(resultsFolder + "allDiskEnergy-" + appPid + ".csv", allDiskEnergy, true);
+						Agent.appendToFile(resultsFolder + "netLibraryDiskEnergy-" + appPid + ".csv", netLibraryDiskEnergy, true);
 
-					// Concatenated values
-					Agent.appendToFile(resultsFolder + "netCon-" + appPid + ".csv", netCon, true);
-					Agent.appendToFile(resultsFolder + "allCon-" + appPid + ".csv", allCon, true);
-					Agent.appendToFile(resultsFolder + "netLibraryCon-" + appPid + ".csv", netLibraryCon, true);
+						// Concatenated values
+						Agent.appendToFile(resultsFolder + "netCon-" + appPid + ".csv", netCon, true);
+						Agent.appendToFile(resultsFolder + "allCon-" + appPid + ".csv", allCon, true);
+						Agent.appendToFile(resultsFolder + "netLibraryCon-" + appPid + ".csv", netLibraryCon, true);
+						break;
 
-				} else if (Agent.outputFormat.equals("file-con")) {
-                    // Concatenated values
-                    Agent.appendToFile(resultsFolder + "netCon-" + appPid + ".csv", netCon, true);
-                    Agent.appendToFile(resultsFolder + "allCon-" + appPid + ".csv", allCon, true);
-                    Agent.appendToFile(resultsFolder + "netLibraryCon-" + appPid + ".csv", netLibraryCon, true);
+					case "file-con":
+						// Concatenated values
+						Agent.appendToFile(resultsFolder + "netCon-" + appPid + ".csv", netCon, true);
+						Agent.appendToFile(resultsFolder + "allCon-" + appPid + ".csv", allCon, true);
+						Agent.appendToFile(resultsFolder + "netLibraryCon-" + appPid + ".csv", netLibraryCon, true);
+						break;
 
-                } else if (Agent.outputFormat.equals("file-console")) {
-					// CPU energy
-					Agent.appendToFile(resultsFolder + "netCPUEnergy-" + appPid + ".csv", netCPUEnergy, true);
-					Agent.appendToFile(resultsFolder + "allCPUEnergy-" + appPid + ".csv", allCPUEnergy, true);
-					Agent.appendToFile(resultsFolder + "netLibraryCPUEnergy-" + appPid + ".csv", netLibraryCPUEnergy, true);
+					case "file-console":
+						// CPU energy
+						Agent.appendToFile(resultsFolder + "netCPUEnergy-" + appPid + ".csv", netCPUEnergy, true);
+						Agent.appendToFile(resultsFolder + "allCPUEnergy-" + appPid + ".csv", allCPUEnergy, true);
+						Agent.appendToFile(resultsFolder + "netLibraryCPUEnergy-" + appPid + ".csv", netLibraryCPUEnergy, true);
 
-					// Number of calls
-					Agent.appendToFile(resultsFolder + "netCalls-" + appPid + ".csv", netCalls, true);
-					Agent.appendToFile(resultsFolder + "allCalls-" + appPid + ".csv", allCalls, true);
-					Agent.appendToFile(resultsFolder + "netLibraryCalls-" + appPid + ".csv", netLibraryCalls, true);
+						// Number of calls
+						Agent.appendToFile(resultsFolder + "netCalls-" + appPid + ".csv", netCalls, true);
+						Agent.appendToFile(resultsFolder + "allCalls-" + appPid + ".csv", allCalls, true);
+						Agent.appendToFile(resultsFolder + "netLibraryCalls-" + appPid + ".csv", netLibraryCalls, true);
 
-					// Disk energy
-					Agent.appendToFile(resultsFolder + "netDiskEnergy-" + appPid + ".csv", netDiskEnergy, true);
-					Agent.appendToFile(resultsFolder + "allDiskEnergy-" + appPid + ".csv", allDiskEnergy, true);
-					Agent.appendToFile(resultsFolder + "netLibraryDiskEnergy-" + appPid + ".csv", netLibraryDiskEnergy, true);
+						// Disk energy
+						Agent.appendToFile(resultsFolder + "netDiskEnergy-" + appPid + ".csv", netDiskEnergy, true);
+						Agent.appendToFile(resultsFolder + "allDiskEnergy-" + appPid + ".csv", allDiskEnergy, true);
+						Agent.appendToFile(resultsFolder + "netLibraryDiskEnergy-" + appPid + ".csv", netLibraryDiskEnergy, true);
 
-					// Concatenated values
-					Agent.appendToFile(resultsFolder + "netCon-" + appPid + ".csv", netCon, true);
-					Agent.appendToFile(resultsFolder + "allCon-" + appPid + ".csv", allCon, true);
-					Agent.appendToFile(resultsFolder + "netLibraryCon-" + appPid + ".csv", netLibraryCon, true);
+						// Concatenated values
+						Agent.appendToFile(resultsFolder + "netCon-" + appPid + ".csv", netCon, true);
+						Agent.appendToFile(resultsFolder + "allCon-" + appPid + ".csv", allCon, true);
+						Agent.appendToFile(resultsFolder + "netLibraryCon-" + appPid + ".csv", netLibraryCon, true);
 
-					// CPU energy
-					System.out.println("\n" + allCPUEnergy + "--------------" + netCPUEnergy + "--------------" + netLibraryCPUEnergy);
+						// CPU energy
+						System.out.println("\n" + allCPUEnergy + "--------------" + netCPUEnergy + "--------------" + netLibraryCPUEnergy);
 
-					// Number of calls
-					System.out.println("\n" + allCalls + "--------------" + netCalls + "--------------" + netLibraryCalls);
+						// Number of calls
+						System.out.println("\n" + allCalls + "--------------" + netCalls + "--------------" + netLibraryCalls);
 
-					// Disk energy
-					System.out.println("\n" + allDiskEnergy + "--------------" + netDiskEnergy + "--------------" + netLibraryDiskEnergy);
+						// Disk energy
+						System.out.println("\n" + allDiskEnergy + "--------------" + netDiskEnergy + "--------------" + netLibraryDiskEnergy);
 
-					// Concatenated values
-					System.out.println("\n" + allCon + "--------------" + netCon + "--------------" + netLibraryCon);
+						// Concatenated values
+						System.out.println("\n" + allCon + "--------------" + netCon + "--------------" + netLibraryCon);
+						break;
+					case "console":
+						// CPU energy
+						System.out.println("\n" + allCPUEnergy + "--------------" + netCPUEnergy + "--------------" + netLibraryCPUEnergy);
 
-				} else if (Agent.outputFormat.equals("console")) {
-					// CPU energy
-					System.out.println("\n" + allCPUEnergy + "--------------" + netCPUEnergy + "--------------" + netLibraryCPUEnergy);
+						// Number of calls
+						System.out.println("\n" + allCalls + "--------------" + netCalls + "--------------" + netLibraryCalls);
 
-					// Number of calls
-					System.out.println("\n" + allCalls + "--------------" + netCalls + "--------------" + netLibraryCalls);
+						// Disk energy
+						System.out.println("\n" + allDiskEnergy + "--------------" + netDiskEnergy + "--------------" + netLibraryDiskEnergy);
 
-					// Disk energy
-					System.out.println("\n" + allDiskEnergy + "--------------" + netDiskEnergy + "--------------" + netLibraryDiskEnergy);
+						// Concatenated values
+						System.out.println("\n" + allCon + "--------------" + netCon + "--------------" + netLibraryCon);
+						break;
 
-					// Concatenated values
-					System.out.println("\n" + allCon + "--------------" + netCon + "--------------" + netLibraryCon);
+					case "":
+						Agent.appendToFile(resultsFolder + "netLibraryCPUEnergy-" + appPid + ".csv", netLibraryCPUEnergy, true);
+						System.out.println("\n");
+						System.out.println(netLibraryCPUEnergy);
+						break;
 
-				} else if (Agent.outputFormat.equals("bash-special")) {
-					Agent.appendToFile(resultsFolder + "netLibraryCPUEnergy-" + appPid + ".csv", netLibraryCPUEnergy, true);
-					System.out.println("\n");
-					System.out.println(netLibraryCPUEnergy);
-				} else {}
+					default:
+						System.out.println("[Jalen] No output format");;
+				}
 
 				System.out.println("OK");
 
