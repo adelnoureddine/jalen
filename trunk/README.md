@@ -63,7 +63,7 @@ We are working on adding new _energy models_ for estimating the energy consumpti
 
 <h2 id="license">License</h2>
 
-Copyright (C) 2013 Inria, University Lille 1.
+Copyright (C) 2013, Adel Noureddine.
 
 Jalen is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as

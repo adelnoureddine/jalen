@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Inria, University Lille 1.
+ * Copyright (c) 2013, Adel Noureddine.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -92,7 +92,7 @@ public class Agent {
 		try {
 			prop.load(new FileInputStream("./config.properties"));
 		} catch (IOException e) {
-			System.out.println("[CRITICAL] No config.properties file found in current directory: " + System.getProperty("user.dir"));
+			System.out.println("[Jalen] [CRITICAL] No config.properties file found in current directory: " + System.getProperty("user.dir"));
 			System.exit(1);
 		}
 
@@ -121,15 +121,32 @@ public class Agent {
 		// Run PowerAPI modules and start monitoring process ID
 
 		// Run PowerAPI modules
-		if (Agent.powerAPICPUSensor.equals("proc")) {
-			PowerAPI.startEnergyModule(fr.inria.powerapi.sensor.cpu.proc.CpuSensor.class);
-			if (Agent.powerAPICPUFormula.equals("max"))
+		switch (Agent.powerAPICPUSensor) {
+			case "proc":
+				PowerAPI.startEnergyModule(fr.inria.powerapi.sensor.cpu.proc.CpuSensor.class);
+				if (Agent.powerAPICPUFormula.equals("max"))
+					PowerAPI.startEnergyModule(fr.inria.powerapi.formula.cpu.max.CpuFormula.class);
+				else if (Agent.powerAPICPUFormula.equals("dvfs"))
+					PowerAPI.startEnergyModule(fr.inria.powerapi.formula.cpu.dvfs.CpuFormula.class);
+				break;
+			case "proc-times":
+				PowerAPI.startEnergyModule(fr.inria.powerapi.sensor.cpu.proc.times.CpuSensor.class);
+				if (Agent.powerAPICPUFormula.equals("max"))
+					PowerAPI.startEnergyModule(fr.inria.powerapi.formula.cpu.max.CpuFormula.class);
+				else if (Agent.powerAPICPUFormula.equals("dvfs"))
+					PowerAPI.startEnergyModule(fr.inria.powerapi.formula.cpu.dvfs.CpuFormula.class);
+				break;
+			case "sigar":
+				PowerAPI.startEnergyModule(fr.inria.powerapi.sensor.cpu.sigar.CpuSensor.class);
 				PowerAPI.startEnergyModule(fr.inria.powerapi.formula.cpu.max.CpuFormula.class);
-			else if (Agent.powerAPICPUFormula.equals("dvfs"))
-				PowerAPI.startEnergyModule(fr.inria.powerapi.formula.cpu.dvfs.CpuFormula.class);
-		} else if (Agent.powerAPICPUSensor.equals("sigar")) {
-			PowerAPI.startEnergyModule(fr.inria.powerapi.sensor.cpu.sigar.CpuSensor.class);
-			PowerAPI.startEnergyModule(fr.inria.powerapi.formula.cpu.max.CpuFormula.class);
+				break;
+			case "sigar-times":
+				PowerAPI.startEnergyModule(fr.inria.powerapi.sensor.cpu.sigar.times.CpuSensor.class);
+				PowerAPI.startEnergyModule(fr.inria.powerapi.formula.cpu.max.CpuFormula.class);
+				break;
+			default:
+				System.out.println("[Jalen] [CRITICAL] The selected CPU monitor < " + Agent.powerAPICPUSensor + " > is not supported.");
+				System.exit(1);
 		}
 
 		if (OSValidator.isUnix()) {
@@ -612,7 +629,7 @@ public class Agent {
 						System.out.println("\n" + allCon + "--------------" + netCon + "--------------" + netLibraryCon);
 						break;
 
-					case "":
+					case "onlyNetLibrary":
 						Agent.appendToFile(resultsFolder + "netLibraryCPUEnergy-" + appPid + ".csv", netLibraryCPUEnergy, true);
 						System.out.println("\n");
 						System.out.println(netLibraryCPUEnergy);
