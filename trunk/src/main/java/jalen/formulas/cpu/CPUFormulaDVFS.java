@@ -76,18 +76,6 @@ public class CPUFormulaDVFS implements CPUFormulasInterface {
 	}
 
 	/**
-	 * Constructor
-	 * @param TDP The TDP of the CPU
-	 * @param cpuSensor The CPU sensor
-	 */
-	public CPUFormulaDVFS(double TDP, CPUSensorsInterface cpuSensor) {
-		this.TDP = TDP;
-		this.TDPFactor = TDPFactor;
-		this.cpuSensor = cpuSensor;
-		this.frequenciesVoltages = new HashMap<Double, Double>();
-	}
-
-	/**
 	 * Calculate the maximum frenquency and voltage of the CPU
 	 * @return an array with 0 the maximum frequency and 1 the maximum voltage
 	 */

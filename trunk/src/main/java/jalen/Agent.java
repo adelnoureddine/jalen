@@ -64,10 +64,6 @@ public class Agent {
 	// For generating data
 	public static String outputFormat = "file";
 
-	// Application level monitoring
-	public static String CPUSensorType;
-	public static String DiskSensorType;
-
 	// Sensors and formulas
 	public static CPUSensorsInterface cpuSensor;
 	public static CPUFormulasInterface cpuFormula;
@@ -75,7 +71,7 @@ public class Agent {
 	public static DiskFormulasInterface diskFormula;
 
 	// Hardware information
-	public static Double cpuTDP, cpuTDPFactor;
+	public static Double cpuTDP, cpuTDPFactor = 0.7;
 	public static String cpuFrequenciesVoltages;
 	public static Double diskReadPower, diskReadRate, diskWritePower, diskWriteRate;
 
@@ -115,14 +111,11 @@ public class Agent {
 
 		// Upate parameters from properties file
 		final String resultsFolder = prop.getProperty("results-folder");
-		Agent.appCycleDuration = Integer.parseInt(prop.getProperty("app-cycle-duration"));
-		Agent.jalenCycleDuration = Integer.parseInt(prop.getProperty("jalenCycle-duration"));
 		Agent.outputFormat = prop.getProperty("output-format");
 		Agent.filterMethodName = prop.getProperty("filter-method-name");
-		Agent.CPUSensorType = prop.getProperty("cpu-sensor");
-		Agent.DiskSensorType = prop.getProperty("disk-sensor");
+
+		// Hardware data
 		Agent.cpuTDP = Double.valueOf(prop.getProperty("cpu-tdp"));
-		Agent.cpuTDPFactor = Double.valueOf(prop.getProperty("cpu-tdp-factor"));
 		Agent.cpuFrequenciesVoltages = prop.getProperty("cpu-frequencies-voltages");
 		Agent.diskReadPower = Double.valueOf(prop.getProperty("disk-read-power"));
 		Agent.diskReadRate = Double.valueOf(prop.getProperty("disk-read-rate"));
