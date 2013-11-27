@@ -147,7 +147,7 @@ public class Agent {
 		Agent.addToJavaLibraryPath(new File(System.getProperty("user.dir") + "/lib/"));
 
 		// Run sensors and formulas
-		System.out.println("[Jalen] Running sensors and formulas:");
+		System.out.println("[Jalen] Loading energy modules:");
 
 		// CPU
 		if (! OSValidator.isUnix()) {
