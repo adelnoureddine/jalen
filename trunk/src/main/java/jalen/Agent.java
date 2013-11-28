@@ -39,30 +39,24 @@ public class Agent {
 
 	// List of method data
 	public static Map<String, Double> methNetCPUEnergy = new HashMap();
-	public static Map<String, Double> methAllCPUEnergy = new HashMap();
 	public static Map<String, Double> methNetLibraryCPUEnergy = new HashMap();
 
 	public static Map<String, Integer> methNetCalls = new HashMap();
-	public static Map<String, Integer> methAllCalls = new HashMap();
 	public static Map<String, Integer> methNetLibraryCalls = new HashMap();
 
 	public static Map<String, Double> methNetDiskEnergy = new HashMap();
-	public static Map<String, Double> methAllDiskEnergy = new HashMap();
 	public static Map<String, Double> methNetLibraryDiskEnergy = new HashMap();
 
 	public static Map<String, String> methNet = new HashMap();
-	public static Map<String, String> methAll = new HashMap();
 	public static Map<String, String> methNetLibrary = new HashMap();
 
 	public static String filterMethodName = "";
+	public static String userDir = System.getProperty("user.dir");
 
 	// For cycle time
 	public static Long lastCPUComputationTime = System.currentTimeMillis();
 	public static int appCycleDuration = 500; // In milliseconds
 	public static int jalenCycleDuration = 10; // In milliseconds
-
-	// For generating data
-	public static String outputFormat = "file";
 
 	// Sensors and formulas
 	public static CPUSensorsInterface cpuSensor;
@@ -105,13 +99,11 @@ public class Agent {
 		try {
 			prop.load(new FileInputStream("./config.properties"));
 		} catch (IOException e) {
-			System.out.println("[Jalen] [CRITICAL] No config.properties file found in current directory: " + System.getProperty("user.dir"));
+			System.out.println("[Jalen] [CRITICAL] No config.properties file found in current directory: " + Agent.userDir);
 			System.exit(1);
 		}
 
 		// Upate parameters from properties file
-		final String resultsFolder = prop.getProperty("results-folder");
-		Agent.outputFormat = prop.getProperty("output-format");
 		Agent.filterMethodName = prop.getProperty("filter-method-name");
 
 		// Hardware data
@@ -140,9 +132,6 @@ public class Agent {
 		// Get Process ID of current application
 		String mxbeanName = ManagementFactory.getRuntimeMXBean().getName();
 		final int appPid = Integer.valueOf(mxbeanName.substring(0, mxbeanName.indexOf('@')));
-
-		// String javaLibraryPath = System.getProperty("java.library.path");
-		// System.out.println(javaLibraryPath);
 
 		Agent.addToJavaLibraryPath(new File(System.getProperty("user.dir") + "/lib/"));
 
@@ -329,24 +318,6 @@ public class Agent {
 											Agent.methNetDiskEnergy.put(methName, td.diskEnergy);
 									}
 
-									// All methods
-									// Add energy to allEnergy for all methods (including top) in stack
-									// Update for all methods in stack
-									if (Agent.methAllCPUEnergy.containsKey(methName))
-										Agent.methAllCPUEnergy.put(methName, Agent.methAllCPUEnergy.get(methName) + td.cpuEnergy);
-									else
-										Agent.methAllCPUEnergy.put(methName, td.cpuEnergy);
-
-									if (Agent.methAllCalls.containsKey(methName))
-										Agent.methAllCalls.put(methName, Agent.methAllCalls.get(methName) + 1);
-									else
-										Agent.methAllCalls.put(methName, 1);
-
-									if (Agent.methAllDiskEnergy.containsKey(methName))
-										Agent.methAllDiskEnergy.put(methName, Agent.methAllDiskEnergy.get(methName) + td.diskEnergy);
-									else
-										Agent.methAllDiskEnergy.put(methName, td.diskEnergy);
-
 									o++;
 
 									if (methName.startsWith(Agent.filterMethodName)) {
@@ -376,10 +347,10 @@ public class Agent {
 					}
 				}
 
-				String netCPUEnergy = "", allCPUEnergy = "", netLibraryCPUEnergy = "";
-				String netCalls = "", allCalls = "", netLibraryCalls = "";
-				String netDiskEnergy = "", allDiskEnergy = "", netLibraryDiskEnergy = "";
-				String netCon = "", allCon = "", netLibraryCon = "";
+				String netCPUEnergy = "", netLibraryCPUEnergy = "";
+				String netCalls = "", netLibraryCalls = "";
+				String netDiskEnergy = "", netLibraryDiskEnergy = "";
+				String netCon = "", netLibraryCon = "";
 
 				// CPU energy
 
@@ -391,14 +362,6 @@ public class Agent {
 					methNet.put(key, value.toString());
 				}
 
-
-				for (Map.Entry<String, Double> entry : Agent.methAllCPUEnergy.entrySet()) {
-					String key = entry.getKey(); // Method name
-					Double value = entry.getValue(); // Method energy
-
-					allCPUEnergy += key + ";" + value + "\n";
-					methAll.put(key, value.toString());
-				}
 
 				for (Map.Entry<String, Double> entry : Agent.methNetLibraryCPUEnergy.entrySet()) {
 					String key = entry.getKey(); // Method name
@@ -423,18 +386,6 @@ public class Agent {
 						methNet.put(key, "0.0;" + value.toString());
 				}
 
-
-				for (Map.Entry<String, Double> entry : Agent.methAllDiskEnergy.entrySet()) {
-					String key = entry.getKey(); // Method name
-					Double value = entry.getValue(); // Method energy
-
-					allDiskEnergy += key + ";" + value + "\n";
-
-					if (methAll.containsKey(key))
-						methAll.put(key, methAll.get(key) + ";" + value.toString());
-					else
-						methAll.put(key, "0.0;" + value.toString());
-				}
 
 				for (Map.Entry<String, Double> entry : Agent.methNetLibraryDiskEnergy.entrySet()) {
 					String key = entry.getKey(); // Method name
@@ -463,19 +414,6 @@ public class Agent {
 						methNet.put(key, "0.0;" + value.toString());
 				}
 
-
-				for (Map.Entry<String, Integer> entry : Agent.methAllCalls.entrySet()) {
-					String key = entry.getKey(); // Method name
-					Integer value = entry.getValue(); // Method energy
-
-					allCalls += key + ";" + value + "\n";
-
-					if (methAll.containsKey(key))
-						methAll.put(key, methAll.get(key) + ";" + value.toString());
-					else
-						methAll.put(key, "0.0;" + value.toString());
-				}
-
 				for (Map.Entry<String, Integer> entry : Agent.methNetLibraryCalls.entrySet()) {
 					String key = entry.getKey(); // Method name
 					Integer value = entry.getValue(); // Method energy
@@ -498,14 +436,6 @@ public class Agent {
 					netCon += key + ";" + value + "\n";
 				}
 
-
-				for (Map.Entry<String, String> entry : Agent.methAll.entrySet()) {
-					String key = entry.getKey(); // Method name
-					String value = entry.getValue(); // Method energy
-
-					allCon += key + ";" + value + "\n";
-				}
-
 				for (Map.Entry<String, String> entry : Agent.methNetLibrary.entrySet()) {
 					String key = entry.getKey(); // Method name
 					String value = entry.getValue(); // Method energy
@@ -518,85 +448,9 @@ public class Agent {
 
 				System.out.print("[Jalen] Dumping energy data... ");
 
-				switch (Agent.outputFormat) {
-					case "file":
-						// CPU energy
-						Agent.appendToFile(resultsFolder + "netCPUEnergy-" + appPid + ".csv", netCPUEnergy, true);
-						Agent.appendToFile(resultsFolder + "allCPUEnergy-" + appPid + ".csv", allCPUEnergy, true);
-						Agent.appendToFile(resultsFolder + "netLibraryCPUEnergy-" + appPid + ".csv", netLibraryCPUEnergy, true);
-
-						// Number of calls
-						Agent.appendToFile(resultsFolder + "netCalls-" + appPid + ".csv", netCalls, true);
-						Agent.appendToFile(resultsFolder + "allCalls-" + appPid + ".csv", allCalls, true);
-						Agent.appendToFile(resultsFolder + "netLibraryCalls-" + appPid + ".csv", netLibraryCalls, true);
-
-						// Disk energy
-						Agent.appendToFile(resultsFolder + "netDiskEnergy-" + appPid + ".csv", netDiskEnergy, true);
-						Agent.appendToFile(resultsFolder + "allDiskEnergy-" + appPid + ".csv", allDiskEnergy, true);
-						Agent.appendToFile(resultsFolder + "netLibraryDiskEnergy-" + appPid + ".csv", netLibraryDiskEnergy, true);
-
-						// Concatenated values
-						Agent.appendToFile(resultsFolder + "netCon-" + appPid + ".csv", netCon, true);
-						Agent.appendToFile(resultsFolder + "allCon-" + appPid + ".csv", allCon, true);
-						Agent.appendToFile(resultsFolder + "netLibraryCon-" + appPid + ".csv", netLibraryCon, true);
-						break;
-
-					case "file-console":
-						// CPU energy
-						Agent.appendToFile(resultsFolder + "netCPUEnergy-" + appPid + ".csv", netCPUEnergy, true);
-						Agent.appendToFile(resultsFolder + "allCPUEnergy-" + appPid + ".csv", allCPUEnergy, true);
-						Agent.appendToFile(resultsFolder + "netLibraryCPUEnergy-" + appPid + ".csv", netLibraryCPUEnergy, true);
-
-						// Number of calls
-						Agent.appendToFile(resultsFolder + "netCalls-" + appPid + ".csv", netCalls, true);
-						Agent.appendToFile(resultsFolder + "allCalls-" + appPid + ".csv", allCalls, true);
-						Agent.appendToFile(resultsFolder + "netLibraryCalls-" + appPid + ".csv", netLibraryCalls, true);
-
-						// Disk energy
-						Agent.appendToFile(resultsFolder + "netDiskEnergy-" + appPid + ".csv", netDiskEnergy, true);
-						Agent.appendToFile(resultsFolder + "allDiskEnergy-" + appPid + ".csv", allDiskEnergy, true);
-						Agent.appendToFile(resultsFolder + "netLibraryDiskEnergy-" + appPid + ".csv", netLibraryDiskEnergy, true);
-
-						// Concatenated values
-						Agent.appendToFile(resultsFolder + "netCon-" + appPid + ".csv", netCon, true);
-						Agent.appendToFile(resultsFolder + "allCon-" + appPid + ".csv", allCon, true);
-						Agent.appendToFile(resultsFolder + "netLibraryCon-" + appPid + ".csv", netLibraryCon, true);
-
-						// CPU energy
-						System.out.println("\n" + allCPUEnergy + "--------------\n" + netCPUEnergy + "--------------\n" + netLibraryCPUEnergy);
-
-						// Number of calls
-						System.out.println("\n" + allCalls + "--------------\n" + netCalls + "--------------\n" + netLibraryCalls);
-
-						// Disk energy
-						System.out.println("\n" + allDiskEnergy + "--------------\n" + netDiskEnergy + "--------------\n" + netLibraryDiskEnergy);
-
-						// Concatenated values
-						System.out.println("\n" + allCon + "--------------\n" + netCon + "--------------\n" + netLibraryCon);
-						break;
-					case "console":
-						// CPU energy
-						System.out.println("\n" + allCPUEnergy + "--------------\n" + netCPUEnergy + "--------------\n" + netLibraryCPUEnergy);
-
-						// Number of calls
-						System.out.println("\n" + allCalls + "--------------\n" + netCalls + "--------------\n" + netLibraryCalls);
-
-						// Disk energy
-						System.out.println("\n" + allDiskEnergy + "--------------\n" + netDiskEnergy + "--------------\n" + netLibraryDiskEnergy);
-
-						// Concatenated values
-						System.out.println("\n" + allCon + "--------------\n" + netCon + "--------------\n" + netLibraryCon);
-						break;
-
-					case "onlyNetLibrary":
-						Agent.appendToFile(resultsFolder + "netLibraryCPUEnergy-" + appPid + ".csv", netLibraryCPUEnergy, true);
-						System.out.println("\n");
-						System.out.println(netLibraryCPUEnergy);
-						break;
-
-					default:
-						System.out.println("[Jalen] No output format");;
-				}
+				// Concatenated values (CPU, Disk, Number of calls)
+				Agent.appendToFile(Agent.userDir + "/net-" + appPid + ".csv", netCon, true);
+				Agent.appendToFile(Agent.userDir + "/netLibrary-" + appPid + ".csv", netLibraryCon, true);
 
 				System.out.println("OK");
 
