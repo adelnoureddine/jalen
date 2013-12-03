@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Adel Noureddine, Inria, University Lille 1.
+ * Copyright (c) 2013, Inria, University Lille 1.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Field;
 import java.util.*;
+
 
 public class Agent {
 
@@ -177,10 +178,7 @@ public class Agent {
 
 				System.out.println("[Jalen] Started monitoring application with ID " + appPid);
 
-				// Cycle loop count for Jalen cycle
-				int cycleLoop = Agent.appCycleDuration / Agent.jalenCycleDuration;
-
-				while (true) { // Loop for application cycle
+				while (true) { // While loop for application cycle
 					Long totalExecTime = 0L, jalenExecTime = 0L;
 					PowerModel.computeCycleDuration();
 
@@ -267,7 +265,6 @@ public class Agent {
 						e.printStackTrace();
 					}
 
-					//System.out.println(totalOverhead);
 				}
 
 			}
@@ -347,9 +344,6 @@ public class Agent {
 					}
 				}
 
-				String netCPUEnergy = "", netLibraryCPUEnergy = "";
-				String netCalls = "", netLibraryCalls = "";
-				String netDiskEnergy = "", netLibraryDiskEnergy = "";
 				String netCon = "", netLibraryCon = "";
 
 				// CPU energy
@@ -358,7 +352,6 @@ public class Agent {
 					String key = entry.getKey(); // Method name
 					Double value = entry.getValue(); // Method energy
 
-					netCPUEnergy += key + ";" + value + "\n";
 					methNet.put(key, value.toString());
 				}
 
@@ -367,7 +360,6 @@ public class Agent {
 					String key = entry.getKey(); // Method name
 					Double value = entry.getValue(); // Method energy
 
-					netLibraryCPUEnergy += key + ";" + value + "\n";
 					methNetLibrary.put(key, value.toString());
 				}
 
@@ -377,8 +369,6 @@ public class Agent {
 				for (Map.Entry<String, Double> entry : Agent.methNetDiskEnergy.entrySet()) {
 					String key = entry.getKey(); // Method name
 					Double value = entry.getValue(); // Method energy
-
-					netDiskEnergy += key + ";" + value + "\n";
 
 					if (methNet.containsKey(key))
 						methNet.put(key, methNet.get(key) + ";" + value.toString());
@@ -390,35 +380,6 @@ public class Agent {
 				for (Map.Entry<String, Double> entry : Agent.methNetLibraryDiskEnergy.entrySet()) {
 					String key = entry.getKey(); // Method name
 					Double value = entry.getValue(); // Method energy
-
-					netLibraryDiskEnergy += key + ";" + value + "\n";
-
-					if (methNetLibrary.containsKey(key))
-						methNetLibrary.put(key, methNetLibrary.get(key) + ";" + value.toString());
-					else
-						methNetLibrary.put(key, "0.0;" + value.toString());
-				}
-
-
-				// Number of calls
-
-				for (Map.Entry<String, Integer> entry : Agent.methNetCalls.entrySet()) {
-					String key = entry.getKey(); // Method name
-					Integer value = entry.getValue(); // Method energy
-
-					netCalls += key + ";" + value + "\n";
-
-					if (methNet.containsKey(key))
-						methNet.put(key, methNet.get(key) + ";" + value.toString());
-					else
-						methNet.put(key, "0.0;" + value.toString());
-				}
-
-				for (Map.Entry<String, Integer> entry : Agent.methNetLibraryCalls.entrySet()) {
-					String key = entry.getKey(); // Method name
-					Integer value = entry.getValue(); // Method energy
-
-					netLibraryCalls += key + ";" + value + "\n";
 
 					if (methNetLibrary.containsKey(key))
 						methNetLibrary.put(key, methNetLibrary.get(key) + ";" + value.toString());
@@ -477,8 +438,8 @@ public class Agent {
 	}
 
 	/**
-	 * Ajoute un nouveau répertoire dans le java.library.path.
-	 * @param dir Le nouveau répertoire à ajouter.
+	 * Add a new folder to java.library.path
+	 * @param dir The new folder to add
 	 */
 	public static void addToJavaLibraryPath(File dir) {
 		final String LIBRARY_PATH = "java.library.path";
@@ -492,11 +453,9 @@ public class Agent {
 	}
 
 	/**
-	 * Supprime le cache du "java.library.path".
-	 * Cela forcera le classloader à revérifier sa valeur lors du prochaine chargement de librairie.
-	 *
-	 * Attention : ceci est spécifique à la JVM de Sun et pourrait ne pas fonctionner
-	 * sur une autre JVM...
+	 * Delete java.library.path cache.
+	 * Therefore the classloader is forced to recheck its value at the next library loading.
+	 * Only supported for Oracle's JVM
 	 */
 	public static void resetJavaLibraryPath() {
 		synchronized(Runtime.getRuntime()) {
