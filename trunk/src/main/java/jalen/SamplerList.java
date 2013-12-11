@@ -19,45 +19,45 @@ public class SamplerList {
 
 	/**
 	 * List of samplers (List of thread data collected during one snapshot)
-	 * collected during all snapshots of one PowerAPI cycle
+	 * collected during all snapshots of one application monitoring cycle
  	 */
-	public List<Sampler> samplers = new ArrayList();
+	protected List<Sampler> samplers = new ArrayList();
 
 	/**
 	 * CPU Power of all threads
  	 */
-	public Double cpuPower = 0.0;
+	protected Double cpuPower = 0.0;
 
 	/**
 	 * CPU Energy of all threads
 	 */
-	public Double cpuEnergy = 0.0;
+	protected Double cpuEnergy = 0.0;
 
 	/**
 	 * Total CPU time of all threads
 	 */
-	public Long totalCPUTime = 0L;
+	protected Long totalCPUTime = 0L;
 
 	/**
 	 * Disk Power of all threads
 	 */
-	public Double diskPower = 0.0;
+	protected Double diskPower = 0.0;
 
 	/**
 	 * Disk Energy of all threads
 	 */
-	public Double diskEnergy = 0.0;
+	protected Double diskEnergy = 0.0;
 
 	/**
 	 * Number of threads where a method has accessed disk
 	 * <br />
 	 * Disk access is considered true if method is from packages java.io or java.nio
 	 */
-	public int diskAccessNum = 0;
+	protected int diskAccessNum = 0;
 
-	public Map<Long, Long> CPUTimeByID = new HashMap();
+	protected Map<Long, Long> CPUTimeByID = new HashMap();
 
-	public Map<Long, Double> CPUEnergyByID = new HashMap();
+	protected Map<Long, Double> CPUEnergyByID = new HashMap();
 
 	/**
 	 * Constructor
@@ -68,7 +68,7 @@ public class SamplerList {
 	/**
 	 * Calculate a map with thread ID and its CPU time
 	 * <br />
-	 * Results are for the duration of PowerAPI cycle
+	 * Results are for the duration of application monitoring cycle
 	 * <br />
 	 * Also update totalCPUTime of all threads
 	 */
@@ -95,7 +95,7 @@ public class SamplerList {
 	/**
 	 * Calculate a map with thread ID and its CPU energy
 	 * <br />
-	 * Results are for the duration of PowerAPI cycle
+	 * Results are for the duration of application monitoring cycle
 	 */
 	public void calculateEnergyByID() {
 		for (Map.Entry<Long, Long> entry : this.CPUTimeByID.entrySet()) {
@@ -113,7 +113,7 @@ public class SamplerList {
 	 * Calculate the energy consumed by each thread snapshot (threadData of sampler)
 	 * <br />
 	 * The calculation is done by distributing the total energy consumed by the thread
-	 * during the PowerAPI cycle, to each snapshot based on its CPU time
+	 * during the application monitoring cycle, to each snapshot based on its CPU time
 	 */
 	public void calculateEnergyBySampler() {
 		for (Map.Entry<Long, Double> entry : this.CPUEnergyByID.entrySet()) {

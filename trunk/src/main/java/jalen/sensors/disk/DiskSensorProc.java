@@ -21,18 +21,18 @@ public class DiskSensorProc implements DiskSensorsInterface {
 	/**
 	 * Process PID to monitor
 	 */
-	public int pid;
+	private int pid;
 
 	/**
 	 * Number of bytes read and written by PID to disk
 	 */
-	public Double readBytes, writeBytes;
+	private Double readBytes, writeBytes;
 
 	/**
 	 * Path to the io file where disk data is stored
 	 * Linux-systems only
 	 */
-	public String diskIOPath;
+	private String diskIOPath;
 
 	/**
 	 * Constructor

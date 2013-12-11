@@ -20,39 +20,39 @@ public class CPUFormulaDVFS implements CPUFormulasInterface {
 	/**
 	 * Thermal Design Power of the CPU (given by constructors)
 	 */
-	public double TDP;
+	private double TDP;
 
 	/**
 	 * TDP factor for CMOS formula
 	 * By default, it is at 0.7
 	 */
-	public double TDPFactor = 0.7;
+	private double TDPFactor = 0.7;
 
 	/**
 	 * The CPU sensor used to collect data from the CPU
 	 */
-	public CPUSensorsInterface cpuSensor;
+	private CPUSensorsInterface cpuSensor;
 
 	/**
 	 * The map of CPU frequencies and the corresponding CPU voltage
 	 * <Frequency, Voltage>
 	 */
-	public Map<Double, Double> frequenciesVoltages;
+	private Map<Double, Double> frequenciesVoltages;
 
 	/**
 	 * Array with the maximum frequency and voltage supported by CPU
 	 */
-	Double[] frequencyVoltageMax;
+	private Double[] frequencyVoltageMax;
 
 	/**
 	 * The map of CPU frequencies and their relevant CPU time
 	 */
-	public Map<Double, Double> frequenciesTimes;
+	private Map<Double, Double> frequenciesTimes;
 
 	/**
 	 * The map of CPU frequencies and their power consumption
 	 */
-	public Map<Double, Double> frequenciesPower;
+	private Map<Double, Double> frequenciesPower;
 
 	/**
 	 * Constructor
@@ -79,7 +79,7 @@ public class CPUFormulaDVFS implements CPUFormulasInterface {
 	 * Calculate the maximum frenquency and voltage of the CPU
 	 * @return an array with 0 the maximum frequency and 1 the maximum voltage
 	 */
-	public Double[] getMaxFrequencyVoltage() {
+	private Double[] getMaxFrequencyVoltage() {
 		Double frequency = 0.0, voltage = 0.0;
 		Double[] result = new Double[2];
 		for (Map.Entry<Double, Double> entry : this.frequenciesVoltages.entrySet()) {

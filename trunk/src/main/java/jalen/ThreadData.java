@@ -16,50 +16,50 @@ public class ThreadData {
 	/**
 	 * Thread
 	 */
-	public Thread thread;
+	protected Thread thread;
 
 	/**
 	 * Thread ID
 	 */
-	public Long id;
+	protected Long id;
 
 	/**
 	 * Thread name
  	 */
-	public String name;
+	protected String name;
 
 	/**
 	 * Thread CPU Time as given by the JVM
 	 */
-	public Long cpuTime = 0L;
+	protected Long cpuTime = 0L;
 
 	/**
 	 * CPU Energy consumed by this thread
 	 * <br />
-	 * This is calculated after a full cycle of PowerAPI
-	 * and therefore after multiple cycles of Jalen
+	 * This is calculated after a full cycle of application monitoring
+	 * and therefore after multiple cycles of source code monitoring
 	 */
-	public Double cpuEnergy = 0.0;
+	protected Double cpuEnergy = 0.0;
 
 	/**
 	 * Disk Energy consumed by this thread
 	 * <br />
-	 * This is calculated after a full cycle of PowerAPI
-	 * and therefore after multiple cycles of Jalen
+	 * This is calculated after a full cycle of application monitoring
+	 * and therefore after multiple cycles of source code monitoring
 	 */
-	public Double diskEnergy = 0.0;
+	protected Double diskEnergy = 0.0;
 
 	/**
 	 * Stracktrace of thread at the snapshot time
  	 */
-	public StackTraceElement[] stackTraces;
+	protected StackTraceElement[] stackTraces;
 
 	/**
 	 * Tell if a method with disk access is present in the stack trace
 	 * <br />
 	 * True if method in package java.io or java.nio is present, else otherwise
 	 */
-	public boolean diskAccess = false;
+	protected boolean diskAccess = false;
 
 	/**
 	 * Constructor

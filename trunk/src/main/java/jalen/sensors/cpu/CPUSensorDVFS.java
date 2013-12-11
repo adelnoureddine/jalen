@@ -24,28 +24,28 @@ public class CPUSensorDVFS implements CPUSensorsInterface {
 	/**
 	 * Sigar object
 	 */
-	public Sigar sigar;
+	private Sigar sigar;
 
 	/**
 	 * Number of cores in CPU, collected from sigar
 	 */
-	public int numberOfCores;
+	private int numberOfCores;
 
 	/**
 	 * Process PID to monitor
 	 */
-	public int pid;
+	private int pid;
 
 	/**
 	 * Map of CPU frequencies and the CPU time they spend in each
 	 */
-	public Map<Double, Double> timeInFrequencies;
+	private Map<Double, Double> timeInFrequencies;
 
 	/**
 	 * Path to the time_in_state file where CPU time data is stored
 	 * Linux-systems only
 	 */
-	public String timeInStatePath = "/sys/devices/system/cpu/cpu%?/cpufreq/stats/time_in_state";
+	private String timeInStatePath = "/sys/devices/system/cpu/cpu%?/cpufreq/stats/time_in_state";
 
 	/**
 	 * Constructor
@@ -103,7 +103,7 @@ public class CPUSensorDVFS implements CPUSensorsInterface {
 	 * This means, this is an aggregated data since start of CPU monitoring by Linux (and not for monitoring cycle)
 	 * @return Map of CPU frequencies and the CPU time spend for each
 	 */
-	public Map<Double, Double> getTimeInFrequenciesFromPath() {
+	private Map<Double, Double> getTimeInFrequenciesFromPath() {
 		Map<Double, Double> timeInFrequenciesCache = new HashMap<Double, Double>();
 
 		for (int i = 0; i<this.numberOfCores; i++) {

@@ -20,17 +20,17 @@ public class CPUSensorSigarMaxFrequency implements CPUSensorsInterface {
 	/**
 	 * Sigar object
 	 */
-	public Sigar sigar;
+	private Sigar sigar;
 
 	/**
 	 * Number of cores in CPU, collected from sigar
 	 */
-	public int numberOfCores;
+	private int numberOfCores;
 
 	/**
 	 * Process PID to monitor
 	 */
-	public int pid;
+	private int pid;
 
 	/**
 	 * Constructor

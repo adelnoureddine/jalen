@@ -13,8 +13,8 @@ package jalen.formulas.disk;
 public interface DiskFormulasInterface {
 
 	/**
-	 * Get CPU power for writing and reading to disk for pid
-	 * @return CPU power for writing and reading to disk for pid
+	 * Get disk power for writing and reading to disk for pid
+	 * @return Disk power for writing and reading to disk for pid
 	 */
 	public double getCPUPower();
 

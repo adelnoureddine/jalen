@@ -17,18 +17,18 @@ public class CPUFormulaMaxFrequency implements CPUFormulasInterface {
 	/**
 	 * Thermal Design Power of the CPU (given by constructors)
 	 */
-	public double TDP;
+	private double TDP;
 
 	/**
 	 * TDP factor for CMOS formula
 	 * By default, it is at 0.7
 	 */
-	public double TDPFactor = 0.7;
+	private double TDPFactor = 0.7;
 
 	/**
 	 * The CPU sensor used to collect data from the CPU
 	 */
-	public CPUSensorsInterface cpuSensor;
+	private CPUSensorsInterface cpuSensor;
 
 	/**
 	 * Constructor
@@ -37,17 +37,6 @@ public class CPUFormulaMaxFrequency implements CPUFormulasInterface {
 	 * @param cpuSensor The CPU sensor
 	 */
 	public CPUFormulaMaxFrequency(double TDP, double TDPFactor, CPUSensorsInterface cpuSensor) {
-		this.TDP = TDP;
-		this.TDPFactor = TDPFactor;
-		this.cpuSensor = cpuSensor;
-	}
-
-	/**
-	 * Constructor
-	 * @param TDP The TDP of the CPU
-	 * @param cpuSensor The CPU sensor
-	 */
-	public CPUFormulaMaxFrequency(double TDP, CPUSensorsInterface cpuSensor) {
 		this.TDP = TDP;
 		this.TDPFactor = TDPFactor;
 		this.cpuSensor = cpuSensor;

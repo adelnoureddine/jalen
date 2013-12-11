@@ -34,41 +34,41 @@ public class Agent {
 	// Samples statistics
 
 	// List of samplerList collected during the execution of the program
-	public static List<SamplerList> samplerList = new ArrayList();
+	private static List<SamplerList> samplerList = new ArrayList();
 
-	public static Map<Long, Long> lastCPUTime = new HashMap();
+	private static Map<Long, Long> lastCPUTime = new HashMap();
 
 	// List of method data
-	public static Map<String, Double> methNetCPUEnergy = new HashMap();
-	public static Map<String, Double> methNetLibraryCPUEnergy = new HashMap();
+	private static Map<String, Double> methNetCPUEnergy = new HashMap();
+	private static Map<String, Double> methNetLibraryCPUEnergy = new HashMap();
 
-	public static Map<String, Integer> methNetCalls = new HashMap();
-	public static Map<String, Integer> methNetLibraryCalls = new HashMap();
+	private static Map<String, Integer> methNetCalls = new HashMap();
+	private static Map<String, Integer> methNetLibraryCalls = new HashMap();
 
-	public static Map<String, Double> methNetDiskEnergy = new HashMap();
-	public static Map<String, Double> methNetLibraryDiskEnergy = new HashMap();
+	private static Map<String, Double> methNetDiskEnergy = new HashMap();
+	private static Map<String, Double> methNetLibraryDiskEnergy = new HashMap();
 
-	public static Map<String, String> methNet = new HashMap();
-	public static Map<String, String> methNetLibrary = new HashMap();
+	private static Map<String, String> methNet = new HashMap();
+	private static Map<String, String> methNetLibrary = new HashMap();
 
-	public static String filterMethodName = "";
-	public static String userDir = System.getProperty("user.dir");
+	private static String filterMethodName = "";
+	private static String userDir = System.getProperty("user.dir");
 
 	// For cycle time
-	public static Long lastCPUComputationTime = System.currentTimeMillis();
-	public static int appCycleDuration = 500; // In milliseconds
-	public static int jalenCycleDuration = 10; // In milliseconds
+	protected static Long lastCPUComputationTime = System.currentTimeMillis();
+	private static int appCycleDuration = 500; // In milliseconds
+	private static int jalenCycleDuration = 10; // In milliseconds
 
 	// Sensors and formulas
-	public static CPUSensorsInterface cpuSensor;
-	public static CPUFormulasInterface cpuFormula;
-	public static DiskSensorsInterface diskSensor;
-	public static DiskFormulasInterface diskFormula;
+	private static CPUSensorsInterface cpuSensor;
+	protected static CPUFormulasInterface cpuFormula;
+	private static DiskSensorsInterface diskSensor;
+	protected static DiskFormulasInterface diskFormula;
 
 	// Hardware information
-	public static Double cpuTDP, cpuTDPFactor = 0.7;
-	public static String cpuFrequenciesVoltages;
-	public static Double diskReadPower, diskReadRate, diskWritePower, diskWriteRate;
+	private static Double cpuTDP, cpuTDPFactor = 0.7;
+	private static String cpuFrequenciesVoltages;
+	private static Double diskReadPower, diskReadRate, diskWritePower, diskWriteRate;
 
 	/**
 	 * JVM hook to statically load the java agent at startup.

@@ -20,14 +20,14 @@ public class Sampler {
 	/**
 	 * List of data threads collected during one snapshot
  	 */
-	public List<ThreadData> threadList = new ArrayList();
+	protected List<ThreadData> threadList = new ArrayList();
 
 	/**
 	 * Number of threads where a method has accessed disk
 	 * <br />
 	 * Disk access is considered true if method is from packages java.io or java.nio
 	 */
-	public int diskAccessNum = 0;
+	protected int diskAccessNum = 0;
 
 	/**
 	 * Constructor
@@ -67,8 +67,8 @@ public class Sampler {
 	/**
 	 * Update CPU energy for threadData
 	 * @param id thread ID
-	 * @param totalCPUEnergy total CPU energy for thread during PowerAPI cycle
-	 * @param totalCPUTime total CPU time for thread during PowerAPI cycle
+	 * @param totalCPUEnergy total CPU energy for thread during application monitoring cycle
+	 * @param totalCPUTime total CPU time for thread during application monitoring cycle
 	 */
 	public void updateCPUEnergy(Long id, Double totalCPUEnergy, Long totalCPUTime) {
 		for (ThreadData td : this.threadList) {
@@ -95,7 +95,7 @@ public class Sampler {
 
 	/**
 	 * Update disk energy for threadData
-	 * @param diskEnergyPerTD disk energy for each thread during PowerAPI cycle
+	 * @param diskEnergyPerTD disk energy for each thread during application monitoring cycle
 	 */
 	public void updateDiskEnergy(Double diskEnergyPerTD) {
 		for (ThreadData td : this.threadList) {

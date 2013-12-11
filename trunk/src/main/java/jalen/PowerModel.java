@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
 
 public class PowerModel {
 	// Cycle duration in milliseconds
-	public static Long cycleDuration = 0L;
+	protected static Long cycleDuration = 0L;
 	
 	/**
 	 * Get CPU power for the current executing process in watt for the monitoring cycle

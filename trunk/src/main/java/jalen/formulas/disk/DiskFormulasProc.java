@@ -18,17 +18,17 @@ public class DiskFormulasProc implements DiskFormulasInterface {
 	 * Disk read and write power, and read and write rate
 	 * Data from configuration file (from hardware specifications)
 	 */
-	public Double diskReadPower, diskReadRate, diskWritePower, diskWriteRate;
+	private Double diskReadPower, diskReadRate, diskWritePower, diskWriteRate;
 
 	/**
 	 * Power for reading/writing one byte
 	 */
-	public Double powerPerReadByte, powerPerWriteByte;
+	private Double powerPerReadByte, powerPerWriteByte;
 
 	/**
 	 * Disk sensor
 	 */
-	public DiskSensorsInterface diskSensor;
+	private DiskSensorsInterface diskSensor;
 
 	/**
 	 * Constructor
