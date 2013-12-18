@@ -14,7 +14,7 @@
 
 	<groupId>jalen</groupId>
 	<artifactId>jalen</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 	<description>Jalen is a Java agent for software energy monitoring at the source code level.</description>
