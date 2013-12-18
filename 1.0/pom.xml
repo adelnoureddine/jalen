@@ -1,0 +1,179 @@
+<!--
+  ~ Copyright (c) 2013, Inria, University Lille 1.
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the GNU Affero General Public License v3.0
+  ~ which accompanies this distribution, and is available at
+  ~ https://www.gnu.org/licenses/agpl-3.0.html
+  ~
+  ~ Author : Adel Noureddine
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>jalen</groupId>
+	<artifactId>jalen</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+	<name>${project.artifactId}</name>
+	<description>Jalen is a Java agent for software energy monitoring at the source code level.</description>
+	<inceptionYear>2013</inceptionYear>
+
+	<url>https://github.com/adelnoureddine/jalen</url>
+
+	<scm>
+		<url>https://github.com/adelnoureddine/jalen.git</url>
+		<connection>scm:git:ssh://git@github.com/adelnoureddine/jalen.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/adelnoureddine/jalen.git</developerConnection>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>The GNU Affero General Public License, Version 3</name>
+			<url>http://www.gnu.org/licenses/agpl.html</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>adelnoureddine</id>
+			<name>Adel Noureddine</name>
+			<email>adel.noureddine@inria.fr</email>
+			<organizationUrl>http://www.adelnoureddine.com</organizationUrl>
+			<roles>
+				<role>Architect</role>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<properties>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<encoding>UTF-8</encoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<firstAuthor.name>Adel Noureddine</firstAuthor.name>
+		<firstAuthor.email>adel.noureddine@inria.fr</firstAuthor.email>
+
+		<sigar.version>1.6.5.132</sigar.version>
+		<sigar-dist.version.output>1.6.5</sigar-dist.version.output>
+		<sigar-dist.unpack.directory>${project.build.directory}/dependency/sigar</sigar-dist.unpack.directory>
+		<sigar-dist.classpath.directory>/hyperic-sigar-${sigar-dist.version.output}/sigar-bin/lib</sigar-dist.classpath.directory>
+
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>thirdparty-uploads</id>
+			<name>The Thirdparty Upload</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.hyperic</groupId>
+			<artifactId>sigar</artifactId>
+			<version>${sigar.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<debug>true</debug>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>jalen.Agent</mainClass>
+						</manifest>
+						<manifestEntries>
+							<Agent-Class>jalen.Agent</Agent-Class>
+							<Premain-Class>jalen.Agent</Premain-Class>
+							<Can-Redefine-Classes>true</Can-Redefine-Classes>
+							<Can-Retransform-Classes>true</Can-Retransform-Classes>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.hyperic</groupId>
+									<artifactId>sigar-dist</artifactId>
+									<version>${sigar.version}</version>
+									<type>zip</type>
+									<includes>**/lib/*</includes>
+									<excludes>**/lib/*jar</excludes>
+									<outputDirectory>${sigar-dist.unpack.directory}</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>standalone</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.4</version>
+						<configuration>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<archive>
+								<manifest>
+									<mainClass>jalen.Agent</mainClass>
+								</manifest>
+								<manifestEntries>
+									<Agent-Class>jalen.Agent</Agent-Class>
+									<Premain-Class>jalen.Agent</Premain-Class>
+									<Can-Redefine-Classes>true</Can-Redefine-Classes>
+									<Can-Retransform-Classes>true</Can-Retransform-Classes>
+								</manifestEntries>
+							</archive>
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
