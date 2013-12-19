@@ -55,6 +55,13 @@ java -javaagent:jalen-1.0-jar-with-dependencies.jar -jar $YOUR_PROGRAM.jar
 
 Configuring Jalen is achieved by modifying the `config.properties` file.
 
+### Generated files
+
+At the end of the execution of the Java application, Jalen will generate two files: net-pid.csv and netLibrary-pid.csv.
+Both of these files have energy values, the difference is that the net-pid.csv file will have the energy consumption of all monitored methods. This includes JDK's own methods.
+netLibrary-pid.csv, on the other hand, will only have tge energy consumption of methods prefixed in the configuration file.
+This is useful to measure energy only for the application, or a library it calls, or even a subset of classes or methods.
+The energy consumed by other methods (including JDK's ones) will be added to the prefixed method that called them.
 
 <h2 id="future-works">Future works</h2>
 
