@@ -63,6 +63,8 @@ Both of these files have energy values, the difference is that the `net-pid.csv`
 This is useful to measure energy only for the application, or a library it calls, or even a subset of classes or methods.
 The energy consumed by other methods (including JDK's ones) will be added to the prefixed method that called them.
 
+The format of both files is as follows: `method-Name;CPU-Energy;Disk-Energy` where method-Name is the full name of the monitored method, CPU-Energy is the CPU energy consumed by the method and Disk-Energy is the disk energy of the method.
+
 <h2 id="future-works">Future works</h2>
 
 We are working on adding new _energy models_ for estimating the energy consumption of software by other hardware resources. If you are interested in joining, feel free to contact us via our [GitHub](https://github.com/adelnoureddine/jalen "GitHub") webpage or email us at adel.noureddine@inria.fr!
