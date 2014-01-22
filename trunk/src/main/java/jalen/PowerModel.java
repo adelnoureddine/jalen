@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Inria, University Lille 1.
+ * Copyright (c) 2014, Inria, University Lille 1.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,19 @@ package jalen;
 
 import java.text.DecimalFormat;
 
-public class PowerModel {
+public final class PowerModel {
+
+	/**
+	 * Private constructor
+	 */
+	private PowerModel() {}
+
 	// Cycle duration in milliseconds
-	protected static Long cycleDuration = 0L;
+	private static Long cycleDuration = 0L;
+
+	protected static Long getCycleDuration() {
+		return PowerModel.cycleDuration;
+	}
 	
 	/**
 	 * Get CPU power for the current executing process in watt for the monitoring cycle

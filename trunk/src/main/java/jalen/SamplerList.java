@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Inria, University Lille 1.
+ * Copyright (c) 2014, Inria, University Lille 1.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ public class SamplerList {
 	 * List of samplers (List of thread data collected during one snapshot)
 	 * collected during all snapshots of one application monitoring cycle
  	 */
-	protected List<Sampler> samplers = new ArrayList();
+	protected List<Sampler> samplers = new ArrayList<>();
 
 	/**
 	 * CPU Power of all threads
@@ -55,9 +55,9 @@ public class SamplerList {
 	 */
 	protected int diskAccessNum = 0;
 
-	protected Map<Long, Long> CPUTimeByID = new HashMap();
+	protected Map<Long, Long> CPUTimeByID = new HashMap<>();
 
-	protected Map<Long, Double> CPUEnergyByID = new HashMap();
+	protected Map<Long, Double> CPUEnergyByID = new HashMap<>();
 
 	/**
 	 * Constructor

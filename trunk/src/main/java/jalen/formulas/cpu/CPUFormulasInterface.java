@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Inria, University Lille 1.
+ * Copyright (c) 2014, Inria, University Lille 1.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,6 @@ public interface CPUFormulasInterface {
 	 * Get CPU power for CPU for pid
 	 * @return CPU power for CPU for pid
 	 */
-	public double getCPUPower();
+	double getCPUPower();
 
 }

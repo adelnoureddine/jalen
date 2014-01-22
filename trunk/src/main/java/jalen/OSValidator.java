@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Inria, University Lille 1.
+ * Copyright (c) 2014, Inria, University Lille 1.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -10,28 +10,29 @@
 
 package jalen;
 
-public class OSValidator {
+/**
+ * OS validator class provides utility methods
+ * to check the OS of the system
+ */
+public final class OSValidator {
+
+	/**
+	 * Private constructor
+	 */
+	private OSValidator() {}
+
+	private static String os = System.getProperty("os.name").toLowerCase();
+
 	public static boolean isWindows() {
-		String os = System.getProperty("os.name").toLowerCase();
-		// windows
-		return (os.indexOf("win") >= 0);
+		return OSValidator.os.contains("win");
 	}
 
 	public static boolean isMac() {
-		String os = System.getProperty("os.name").toLowerCase();
-		// Mac
-		return (os.indexOf("mac") >= 0);
+		return OSValidator.os.contains("mac");
 	}
 
 	public static boolean isUnix() {
-		String os = System.getProperty("os.name").toLowerCase();
-		// linux or unix
-		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
+		return (OSValidator.os.contains("nix") || OSValidator.os.contains("nux"));
 	}
 
-	public static boolean isSolaris() {
-		String os = System.getProperty("os.name").toLowerCase();
-		// Solaris
-		return (os.indexOf("sunos") >= 0);
-	}
 }

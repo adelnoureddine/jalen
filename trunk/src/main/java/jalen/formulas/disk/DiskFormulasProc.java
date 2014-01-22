@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Inria, University Lille 1.
+ * Copyright (c) 2014, Inria, University Lille 1.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -52,8 +52,7 @@ public class DiskFormulasProc implements DiskFormulasInterface {
 		this.powerPerWriteByte = this.diskWritePower / (this.diskWriteRate * 1000000);
 
 		Double[] readWriteBytes = this.diskSensor.getProcesDiskReadWriteBytes();
-		Double result = (readWriteBytes[0] * this.powerPerReadByte) + (readWriteBytes[1] * this.powerPerWriteByte);
-		return result;
+		return (readWriteBytes[0] * this.powerPerReadByte) + (readWriteBytes[1] * this.powerPerWriteByte);
 	}
 
 }

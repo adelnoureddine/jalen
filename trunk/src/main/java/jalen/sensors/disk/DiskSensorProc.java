@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Inria, University Lille 1.
+ * Copyright (c) 2014, Inria, University Lille 1.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,14 @@
 
 package jalen.sensors.disk;
 
+import jalen.Agent;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Level;
 
 public class DiskSensorProc implements DiskSensorsInterface {
 
@@ -58,7 +61,7 @@ public class DiskSensorProc implements DiskSensorsInterface {
 			this.readBytes = Double.valueOf(allLines.get(4).split(" ")[1]);
 			this.writeBytes = Double.valueOf(allLines.get(5).split(" ")[1]) - Double.valueOf(allLines.get(6).split(" ")[1]);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Agent.LOGGER.log(Level.WARNING, e.getMessage());
 		}
 
 		return results;

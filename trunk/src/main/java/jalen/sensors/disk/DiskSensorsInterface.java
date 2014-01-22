@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Inria, University Lille 1.
+ * Copyright (c) 2014, Inria, University Lille 1.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,6 @@ public interface DiskSensorsInterface {
 	 * double[0] = read
 	 * double[1] = write
 	 */
-	public Double[] getProcesDiskReadWriteBytes();
+	Double[] getProcesDiskReadWriteBytes();
 
 }

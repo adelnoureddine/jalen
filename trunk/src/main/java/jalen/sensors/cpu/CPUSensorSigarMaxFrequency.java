@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Inria, University Lille 1.
+ * Copyright (c) 2014, Inria, University Lille 1.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,12 @@
 
 package jalen.sensors.cpu;
 
+import jalen.Agent;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
 import java.util.Map;
+import java.util.logging.Level;
 
 public class CPUSensorSigarMaxFrequency implements CPUSensorsInterface {
 
@@ -49,7 +51,7 @@ public class CPUSensorSigarMaxFrequency implements CPUSensorsInterface {
 		try {
 			this.numberOfCores = this.sigar.getCpuInfoList()[0].getTotalCores();
 		} catch (SigarException e) {
-			e.printStackTrace();
+			Agent.LOGGER.log(Level.WARNING, e.getMessage());
 		}
 	}
 
@@ -58,7 +60,7 @@ public class CPUSensorSigarMaxFrequency implements CPUSensorsInterface {
 		try {
 			return (this.sigar.getProcCpu(this.pid).getPercent() / this.numberOfCores);
 		} catch (SigarException e) {
-			e.printStackTrace();
+			Agent.LOGGER.log(Level.WARNING, e.getMessage());
 			return 0.0;
 		}
 	}

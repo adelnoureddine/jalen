@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Inria, University Lille 1.
+ * Copyright (c) 2014, Inria, University Lille 1.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -27,29 +27,32 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
-public class Agent {
+public final class Agent {
 
 	// Samples statistics
 
 	// List of samplerList collected during the execution of the program
-	private static List<SamplerList> samplerList = new ArrayList();
+	private static List<SamplerList> samplerList = new ArrayList<>();
 
-	private static Map<Long, Long> lastCPUTime = new HashMap();
+	private static Map<Long, Long> lastCPUTime = new HashMap<>();
 
 	// List of method data
-	private static Map<String, Double> methNetCPUEnergy = new HashMap();
-	private static Map<String, Double> methNetLibraryCPUEnergy = new HashMap();
+	private static Map<String, Double> methNetCPUEnergy = new HashMap<>();
+	private static Map<String, Double> methNetLibraryCPUEnergy = new HashMap<>();
 
-	private static Map<String, Integer> methNetCalls = new HashMap();
-	private static Map<String, Integer> methNetLibraryCalls = new HashMap();
+	private static Map<String, Integer> methNetCalls = new HashMap<>();
+	private static Map<String, Integer> methNetLibraryCalls = new HashMap<>();
 
-	private static Map<String, Double> methNetDiskEnergy = new HashMap();
-	private static Map<String, Double> methNetLibraryDiskEnergy = new HashMap();
+	private static Map<String, Double> methNetDiskEnergy = new HashMap<>();
+	private static Map<String, Double> methNetLibraryDiskEnergy = new HashMap<>();
 
-	private static Map<String, String> methNet = new HashMap();
-	private static Map<String, String> methNetLibrary = new HashMap();
+	private static Map<String, String> methNet = new HashMap<>();
+	private static Map<String, String> methNetLibrary = new HashMap<>();
 
 	private static String filterMethodName = "";
 	private static String userDir = System.getProperty("user.dir");
@@ -70,6 +73,14 @@ public class Agent {
 	private static String cpuFrequenciesVoltages;
 	private static Double diskReadPower, diskReadRate, diskWritePower, diskWriteRate;
 
+	public static final Logger LOGGER = Logger.getLogger(Agent.class.getName());
+
+
+	/**
+	 * Private constructor
+	 */
+	private Agent() {}
+
 	/**
 	 * JVM hook to statically load the java agent at startup.
 	 * <p/>
@@ -80,13 +91,22 @@ public class Agent {
 
 		Thread.currentThread().setName("Jalen Agent Threads");
 		System.out.println("+---------------------------------------------------+");
-		System.out.println("| Jalen Agent Version 1.0                           |");
+		System.out.println("| Jalen Agent Version 1.1                           |");
 		System.out.println("+---------------------------------------------------+");
+
+
+		// Initialize logger
+		ConsoleHandler ch = new ConsoleHandler();
+		ch.setFormatter(new JalenFormatter());
+		Agent.LOGGER.addHandler(ch);
+		Agent.LOGGER.setLevel(Level.CONFIG);
+		Agent.LOGGER.setUseParentHandlers(false);
+
 
 		ThreadMXBean mxbean = ManagementFactory.getThreadMXBean();
 		// Check if CPU Time measurement is supported by the JVM. Quit otherwise
 		if (! mxbean.isThreadCpuTimeSupported()) {
-			System.out.println("[CRITICAL] Thread CPU Time is not supported on this Java Virtual Machine");
+			Agent.LOGGER.log(Level.SEVERE, "Thread CPU Time is not supported on this Java Virtual Machine");
 			System.exit(1);
 		}
 
@@ -94,14 +114,24 @@ public class Agent {
 		if (! mxbean.isThreadCpuTimeEnabled())
 			mxbean.setThreadCpuTimeEnabled(true);
 
-		System.out.print("[Jalen] Loading properties... ");
+		Agent.LOGGER.log(Level.INFO, "Loading properties");
+
 		// Read properties file
 		Properties prop = new Properties();
+		FileInputStream fis = null;
 		try {
-			prop.load(new FileInputStream("./config.properties"));
+			fis = new FileInputStream("./config.properties");
+			prop.load(fis);
 		} catch (IOException e) {
-			System.out.println("[Jalen] [CRITICAL] No config.properties file found in current directory: " + Agent.userDir);
+			Agent.LOGGER.log(Level.SEVERE, "No config.properties file found in current directory: " + Agent.userDir);
 			System.exit(1);
+		} finally {
+			try {
+			if (fis != null)
+				fis.close();
+			} catch (IOException e) {
+				Agent.LOGGER.log(Level.WARNING, e.getMessage());
+			}
 		}
 
 		// Upate parameters from properties file
@@ -128,7 +158,6 @@ public class Agent {
 			iArray += 2;
 		}
 
-		System.out.println("OK");
 
 		// Get Process ID of current application
 		String mxbeanName = ManagementFactory.getRuntimeMXBean().getName();
@@ -137,7 +166,7 @@ public class Agent {
 		Agent.addToJavaLibraryPath(new File(System.getProperty("user.dir") + "/lib/"));
 
 		// Run sensors and formulas
-		System.out.println("[Jalen] Loading energy modules:");
+		Agent.LOGGER.log(Level.INFO, "Loading energy modules");
 
 		// CPU
 		if (! OSValidator.isUnix()) {
@@ -145,20 +174,20 @@ public class Agent {
 			Agent.cpuSensor = new CPUSensorSigarMaxFrequency(appPid);
 			Agent.cpuFormula = new CPUFormulaMaxFrequency(Agent.cpuTDP, Agent.cpuTDPFactor, Agent.cpuSensor);
 
-			System.out.println("[Jalen] CPU...OK -- Max frequency");
-			System.out.println("[Jalen] Disk...Fail -- Only supported on Linux-based systems");
+			Agent.LOGGER.log(Level.INFO, "CPU...OK -- Max frequency");
+			Agent.LOGGER.log(Level.WARNING, "Disk...Fail -- Only supported on Linux-based systems");
 		} else {
 			// Linux-based systems
 			try {
 				// First attempt to use DVFS
 				Agent.cpuSensor = new CPUSensorDVFS(appPid, frequenciesMap);
 				Agent.cpuFormula = new CPUFormulaDVFS(Agent.cpuTDP, Agent.cpuTDPFactor, Agent.cpuSensor, frequenciesVoltages);
-				System.out.println("[Jalen] CPU...OK -- DVFS");
+				Agent.LOGGER.log(Level.INFO, "CPU...OK -- DVFS");
 			} catch (Exception e) {
 				// Fail to use DVFS, then use max frequency
 				Agent.cpuSensor = new CPUSensorSigarMaxFrequency(appPid);
 				Agent.cpuFormula = new CPUFormulaMaxFrequency(Agent.cpuTDP, Agent.cpuTDPFactor, Agent.cpuSensor);
-				System.out.println("[Jalen] CPU...OK -- Max frequency");
+				Agent.LOGGER.log(Level.INFO, "CPU...OK -- Max frequency");
 			}
 
 			// Run disk monitoring
@@ -166,7 +195,7 @@ public class Agent {
 			Agent.diskSensor = new DiskSensorProc(appPid);
 			Agent.diskFormula = new DiskFormulasProc(Agent.diskReadPower, Agent.diskReadRate, Agent.diskWritePower, Agent.diskWriteRate, Agent.diskSensor);
 
-			System.out.println("[Jalen] Disk...OK");
+			Agent.LOGGER.log(Level.INFO, "Disk...OK");
 		}
 
 		/**
@@ -176,7 +205,7 @@ public class Agent {
 			public void run() {
 				Thread.currentThread().setName("Jalen Agent Computation");
 
-				System.out.println("[Jalen] Started monitoring application with ID " + appPid);
+				Agent.LOGGER.log(Level.INFO, "Started monitoring application with ID " + appPid);
 
 				while (true) { // While loop for application cycle
 					Long totalExecTime = 0L, jalenExecTime = 0L;
@@ -188,10 +217,10 @@ public class Agent {
 					Double processDiskPower = 0.0, processDiskEnergy = 0.0;
 
 					processCPUPower = PowerModel.getProcessCPUPower();
-					processCPUEnergy = processCPUPower * (PowerModel.cycleDuration / 1000.0); // Divide by 1000 to have it in seconds
+					processCPUEnergy = processCPUPower * (PowerModel.getCycleDuration() / 1000.0); // Divide by 1000 to have it in seconds
 
 					processDiskPower = PowerModel.getProcessDiskPower();
-					processDiskEnergy = processDiskPower * (PowerModel.cycleDuration / 1000.0); // Divide by 1000 to have it in seconds
+					processDiskEnergy = processDiskPower * (PowerModel.getCycleDuration() / 1000.0); // Divide by 1000 to have it in seconds
 
 					samList.cpuEnergy = processCPUEnergy;
 					samList.cpuPower = processCPUPower;
@@ -231,7 +260,7 @@ public class Agent {
 							}
 						}
 
-						synchronized (globalLock) {
+						synchronized (GLOBALLOCK) {
 							samList.samplers.add(sam);
 						}
 
@@ -251,18 +280,18 @@ public class Agent {
 						try {
 							Thread.sleep(Agent.jalenCycleDuration);
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							Agent.LOGGER.log(Level.WARNING, e.getMessage());
 						}
 					}
 
-					synchronized (globalLock) {
+					synchronized (GLOBALLOCK) {
 						Agent.samplerList.add(samList);
 					}
 
 					try {
 						Thread.sleep(Agent.appCycleDuration);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						Agent.LOGGER.log(Level.WARNING, e.getMessage());
 					}
 
 				}
@@ -277,9 +306,9 @@ public class Agent {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				System.out.print("[Jalen] Calculating energy data... ");
+				Agent.LOGGER.log(Level.INFO, "Calculating and writing energy data");
 
-				synchronized (globalLock) {
+				synchronized (GLOBALLOCK) {
 					for (SamplerList samList : Agent.samplerList) {
 						samList.calculateCPUTimeByID();
 						samList.calculateEnergyByID();
@@ -390,32 +419,32 @@ public class Agent {
 
 				// Concatenated values
 
+				StringBuffer buf = new StringBuffer();
+
 				for (Map.Entry<String, String> entry : Agent.methNet.entrySet()) {
 					String key = entry.getKey(); // Method name
 					String value = entry.getValue(); // Method energy
 
-					netCon += key + ";" + value + "\n";
+					buf.append(key + ";" + value + "\n");
 				}
+
+				netCon = buf.toString();
+
+				buf = new StringBuffer();
 
 				for (Map.Entry<String, String> entry : Agent.methNetLibrary.entrySet()) {
 					String key = entry.getKey(); // Method name
 					String value = entry.getValue(); // Method energy
 
-					netLibraryCon += key + ";" + value + "\n";
+					buf.append(key + ";" + value + "\n");
 				}
 
+				netLibraryCon = buf.toString();
 
-				System.out.println("OK");
-
-				System.out.print("[Jalen] Dumping energy data... ");
 
 				// Concatenated values (CPU, Disk, Number of calls)
 				Agent.appendToFile(Agent.userDir + "/net-" + appPid + ".csv", netCon, true);
 				Agent.appendToFile(Agent.userDir + "/netLibrary-" + appPid + ".csv", netLibraryCon, true);
-
-				System.out.println("OK");
-
-				System.out.println("[Jalen] Agent stopped");
 			}
 		});
 	}
@@ -433,7 +462,7 @@ public class Agent {
 			out.write(methData);
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Agent.LOGGER.log(Level.WARNING, e.getMessage());
 		}
 	}
 
@@ -442,12 +471,12 @@ public class Agent {
 	 * @param dir The new folder to add
 	 */
 	public static void addToJavaLibraryPath(File dir) {
-		final String LIBRARY_PATH = "java.library.path";
+		final String libraryPath = "java.library.path";
 		if (!dir.isDirectory()) {
 			throw new IllegalArgumentException(dir + " is not a directory.");
 		}
-		String javaLibraryPath = System.getProperty(LIBRARY_PATH);
-		System.setProperty(LIBRARY_PATH, javaLibraryPath + File.pathSeparatorChar + dir.getAbsolutePath());
+		String javaLibraryPath = System.getProperty(libraryPath);
+		System.setProperty(libraryPath, javaLibraryPath + File.pathSeparatorChar + dir.getAbsolutePath());
 
 		resetJavaLibraryPath();
 	}
@@ -467,10 +496,8 @@ public class Agent {
 				field = ClassLoader.class.getDeclaredField("sys_paths");
 				field.setAccessible(true);
 				field.set(null, null);
-			} catch (NoSuchFieldException e) {
-				throw new RuntimeException(e);
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+			} catch (NoSuchFieldException | IllegalAccessException e) {
+				Agent.LOGGER.log(Level.WARNING, e.getMessage());
 			}
 		}
 	}
@@ -479,7 +506,7 @@ public class Agent {
 	 * Global monitor used to implement mutual-exclusion. In the future this single
 	 * monitor may be broken up into many different monitors to reduce contention.
 	 */
-	static final Object globalLock = new GlobalLock();
+	static final Object GLOBALLOCK = new GlobalLock();
 	public static class GlobalLock {}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Inria, University Lille 1.
+ * Copyright (c) 2014, Inria, University Lille 1.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Affero General Public License v3.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ public class Sampler {
 	/**
 	 * List of data threads collected during one snapshot
  	 */
-	protected List<ThreadData> threadList = new ArrayList();
+	protected List<ThreadData> threadList = new ArrayList<>();
 
 	/**
 	 * Number of threads where a method has accessed disk
@@ -42,7 +42,7 @@ public class Sampler {
 	 * @return a map of thread ID and CPU time
 	 */
 	public Map<Long, Long> calculateCPUTimeByID() {
-		Map<Long, Long> results = new HashMap();
+		Map<Long, Long> results = new HashMap<>();
 
 		for (ThreadData td : this.threadList) {
 			results.put(td.id, td.cpuTime);
@@ -58,7 +58,7 @@ public class Sampler {
 	 */
 	public ThreadData getThreadDataByID(Long id) {
 		for (ThreadData td : this.threadList) {
-			if (td.id == id)
+			if (td.id.equals(id))
 				return td;
 		}
 		return null;
@@ -72,7 +72,7 @@ public class Sampler {
 	 */
 	public void updateCPUEnergy(Long id, Double totalCPUEnergy, Long totalCPUTime) {
 		for (ThreadData td : this.threadList) {
-			if (td.id == id) {
+			if (td.id.equals(id)) {
 				//System.out.println(totalCPUTime + " -- " + td.cpuTime + " -- " + totalCPUEnergy);
 				Double result = (td.cpuTime * totalCPUEnergy) / totalCPUTime;
 				if (result.isNaN())
