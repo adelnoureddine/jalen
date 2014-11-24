@@ -8,14 +8,14 @@
  * Author : Adel Noureddine
  */
 
-package jalen.formulas.disk;
+package jalen.formulas.cpu;
 
-public interface DiskFormulasInterface {
+public interface CPUFormulasInterface {
 
 	/**
-	 * Get disk power for writing and reading to disk for pid
-	 * @return Disk power for writing and reading to disk for pid
+	 * Get CPU power for CPU for pid
+	 * @return CPU power for CPU for pid
 	 */
-	double getDiskPower();
+	double getCPUPower();
 
 }

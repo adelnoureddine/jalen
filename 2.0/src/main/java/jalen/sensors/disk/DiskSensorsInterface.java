@@ -8,14 +8,16 @@
  * Author : Adel Noureddine
  */
 
-package jalen.formulas.disk;
+package jalen.sensors.disk;
 
-public interface DiskFormulasInterface {
+public interface DiskSensorsInterface {
 
 	/**
-	 * Get disk power for writing and reading to disk for pid
-	 * @return Disk power for writing and reading to disk for pid
+	 * Get number of bytes read and written by pid
+	 * @return An array with number of bytes read and written
+	 * double[0] = read
+	 * double[1] = write
 	 */
-	double getDiskPower();
+	Double[] getProcesDiskReadWriteBytes();
 
 }
